@@ -11,8 +11,8 @@ pipeline {
     stage('Checkout') {
       steps {
         git branch: 'main', url: 'https://github.com/IamAkshayjagtap/Jarvis-Desktop-Voice-Assistant.git'
-      }
-    }
+       }
+     }
 
     stage('Package & Transfer') {
       steps {
@@ -21,9 +21,9 @@ pipeline {
             ssh -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_HOST} "mkdir -p ${REMOTE_DIR}"
             rsync -avz --delete --exclude='.git' ./ ${REMOTE_USER}@${REMOTE_HOST}:${REMOTE_DIR}/
           '''
-        }
-      }
-    }
+         }
+       }
+     }
 
      stages {
         stage('Install Nginx & Create Webpage') {
@@ -36,26 +36,25 @@ pipeline {
                             echo '<h1>Hello from Jenkins - NGINX Deployment!</h1>' | sudo tee /var/www/html/index.html
                         "
                     """
-                }
-            }
-        }
-    }
+                 }
+             }
+         }
+     }
 
-    stage('Remote: Setup & Restart') {
+     stage('Remote: Setup & Restart') {
       steps {
        sshagent(['jarvis_key']) {
-    sh """
+      sh """
         ssh -o StrictHostKeyChecking=no ubuntu@13.203.74.115 'cat > /home/ubuntu/jarvis/setup_and_restart.sh <<EOF
              #!/bin/bash
              cd /home/ubuntu/jarvis
              sudo systemctl restart jarvis.service
         EOF'
-        ssh -o StrictHostKeyChecking=no ubuntu@13.203.74.115 'chmod +x /home/ubuntu/jarvis/setup_and_restart.sh'
-    """
-    }
-
-        }
-      }
-    }
-  }
+          ssh -o StrictHostKeyChecking=no ubuntu@13.203.74.115 'chmod +x /home/ubuntu/jarvis/setup_and_restart.sh'
+      """
+          }
+         }
+       }
+     }
+   }
 

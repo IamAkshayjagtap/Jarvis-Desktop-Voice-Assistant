@@ -7,26 +7,24 @@ pipeline {
     CRED_ID     = "jarvis_key"
   }
 
-stage('Install Nginx & Create Webpage') {
-    steps {
-        sshagent(['jarvis_key']) {
-            sh """
-                ssh -o StrictHostKeyChecking=no ubuntu@13.203.74.115 '
-                    sudo apt update -y &&
-                    sudo apt install nginx -y &&
-
-                    # Create index.html
-                    echo "<h1>Welcome to Jarvis Deployment</h1>" | sudo tee /var/www/html/index.html > /dev/null &&
-
-                    # Restart nginx
-                    sudo systemctl restart nginx &&
-                    sudo systemctl enable nginx
-                '
-            """
+ pipeline {
+  agent any
+  stages {
+        stage('Install Nginx & Create Webpage') {
+            steps {
+                sshagent (credentials: ['ec2-ssh']) {
+                    sh """
+                        ssh -o StrictHostKeyChecking=no ubuntu@YOUR_SERVER_IP "
+                            sudo apt update &&
+                            sudo apt install -y nginx &&
+                            echo '<h1>Hello from Jenkins - NGINX Deployment!</h1>' | sudo tee /var/www/html/index.html
+                        "
+                    """
+                }
+            }
         }
     }
 }
-
   
   stages {
     stage('Checkout') {

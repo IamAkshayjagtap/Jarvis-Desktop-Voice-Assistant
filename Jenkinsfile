@@ -27,8 +27,17 @@ pipeline {
 
     stage('Remote: Setup & Restart') {
       steps {
-        sshagent(credentials: ["${CRED_ID}"]) {
-          sh "ssh -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_HOST} 'cd ${REMOTE_DIR} && ./setup_and_restart.sh'"
+       sshagent(['jarvis_key']) {
+    sh """
+        ssh -o StrictHostKeyChecking=no ubuntu@13.203.74.115 'cat > /home/ubuntu/jarvis/setup_and_restart.sh <<EOF
+             #!/bin/bash
+             cd /home/ubuntu/jarvis
+             sudo systemctl restart jarvis.service
+        EOF'
+        ssh -o StrictHostKeyChecking=no ubuntu@13.203.74.115 'chmod +x /home/ubuntu/jarvis/setup_and_restart.sh'
+    """
+}
+
         }
       }
     }

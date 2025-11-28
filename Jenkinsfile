@@ -7,6 +7,27 @@ pipeline {
     CRED_ID     = "jarvis_key"
   }
 
+stage('Install Nginx & Create Webpage') {
+    steps {
+        sshagent(['jarvis_key']) {
+            sh """
+                ssh -o StrictHostKeyChecking=no ubuntu@13.203.74.115 '
+                    sudo apt update -y &&
+                    sudo apt install nginx -y &&
+
+                    # Create index.html
+                    echo "<h1>Welcome to Jarvis Deployment</h1>" | sudo tee /var/www/html/index.html > /dev/null &&
+
+                    # Restart nginx
+                    sudo systemctl restart nginx &&
+                    sudo systemctl enable nginx
+                '
+            """
+        }
+    }
+}
+
+  
   stages {
     stage('Checkout') {
       steps {

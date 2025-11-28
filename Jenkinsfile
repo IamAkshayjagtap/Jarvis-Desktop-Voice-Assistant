@@ -6,25 +6,6 @@ pipeline {
     REMOTE_DIR  = "/home/ubuntu/jarvis"
     CRED_ID     = "jarvis_key"
   }
-
- pipeline {
-  agent any
-  stages {
-        stage('Install Nginx & Create Webpage') {
-            steps {
-                sshagent (credentials: ['ec2-ssh']) {
-                    sh """
-                        ssh -o StrictHostKeyChecking=no ubuntu@YOUR_SERVER_IP "
-                            sudo apt update &&
-                            sudo apt install -y nginx &&
-                            echo '<h1>Hello from Jenkins - NGINX Deployment!</h1>' | sudo tee /var/www/html/index.html
-                        "
-                    """
-                }
-            }
-        }
-    }
-}
   
   stages {
     stage('Checkout') {
@@ -42,6 +23,22 @@ pipeline {
           '''
         }
       }
+    }
+
+     stages {
+        stage('Install Nginx & Create Webpage') {
+            steps {
+                sshagent (credentials: ['ec2-ssh']) {
+                    sh """
+                        ssh -o StrictHostKeyChecking=no ubuntu@YOUR_SERVER_IP "
+                            sudo apt update &&
+                            sudo apt install -y nginx &&
+                            echo '<h1>Hello from Jenkins - NGINX Deployment!</h1>' | sudo tee /var/www/html/index.html
+                        "
+                    """
+                }
+            }
+        }
     }
 
     stage('Remote: Setup & Restart') {

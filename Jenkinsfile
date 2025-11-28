@@ -5,7 +5,7 @@ pipeline {
         REMOTE_USER = "ubuntu"
         REMOTE_HOST = "13.203.74.115"
         REMOTE_DIR  = "/home/ubuntu/jarvis"
-        CRED_ID     = "jarvis_key"
+        CRED_ID     = "my_key"
     }
 
     stages {

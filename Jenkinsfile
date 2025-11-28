@@ -36,10 +36,10 @@ pipeline {
         EOF'
         ssh -o StrictHostKeyChecking=no ubuntu@13.203.74.115 'chmod +x /home/ubuntu/jarvis/setup_and_restart.sh'
     """
-}
+    }
 
         }
       }
     }
   }
-}
+
